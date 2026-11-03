@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mã hóa RSA &amp; AES | Nhóm 01</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/redesign.css">
+</head>
+
+<body class="crypto-lab">
+  <a class="skip-link" href="#main">Bỏ qua, tới nội dung chính</a>
+  <div class="fx-stage" aria-hidden="true">
+    <canvas id="crypto-lattice"></canvas>
+    <div class="fx-grid"></div>
+    <div class="fx-scanlines"></div>
+    <div class="fx-orb fx-orb-a"></div>
+    <div class="fx-orb fx-orb-b"></div>
+    <div class="cursor-glow"></div>
+  </div>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="index.html" aria-label="Trang chủ">
+        <span class="brand-emblem">
+          <span class="brand-orbit brand-orbit-a" aria-hidden="true"></span>
+          <span class="brand-orbit brand-orbit-b" aria-hidden="true"></span>
+          <img src="assets/logo_iuh.png" alt="Trường Đại học Công nghiệp TP.HCM" class="brand-logo">
+        </span>
+        <span class="brand-text"><span class="brand-kicker">Interactive cryptography lab</span><span
+            class="brand-name">Mã hóa RSA &amp; AES</span><span class="brand-sub">Nhóm 01 -
+            DHHTTT20B_TCTA</span></span>
+      </a>
+      <div class="header-modules" aria-label="Các mô-đun mật mã">
+        <span class="header-module module-rsa"><i aria-hidden="true"></i><span><b>RSA</b><small>OAEP / CRT</small></span></span>
+        <span class="header-module module-aes"><i aria-hidden="true"></i><span><b>AES</b><small>CBC / CTR</small></span></span>
+        <span class="header-module module-hybrid"><i aria-hidden="true"></i><span><b>HYBRID</b><small>FILE VAULT</small></span></span>
+      </div>
+      <div class="header-actions">
+        <span class="header-telemetry" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="offline-pill" title="Mọi phép tính chạy trên trình duyệt">
+          <span class="dot"></span><span class="offline-copy"><b>LOCAL MODE</b><small>Không gửi dữ liệu</small></span>
+        </span>
+        <button class="btn btn-header" type="button" data-bs-toggle="modal" data-bs-target="#guide">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.7 9a2.4 2.4 0 1 1 3.7 2c-.9.6-1.4 1-1.4 2"></path><path d="M12 17h.01"></path></svg>
+          <span>Hướng dẫn</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Điều hướng">
+      <div class="sidebar-console" aria-hidden="true">
+        <span class="console-label">LOCAL SECURITY NODE</span>
+        <span class="console-value"><i></i> ONLINE</span>
+      </div>
+      <nav class="nav flex-column side-nav" role="tablist">
+        <p class="nav-group">Ứng dụng</p>
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-app" type="button" role="tab"
+          data-accent="hybrid"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+            <path d="M14 3v5h5" />
+            <rect x="9" y="12" width="6" height="5" rx="1" />
+            <path d="M10.5 12v-1.5a1.5 1.5 0 0 1 3 0V12" />
+          </svg><span>Mã hóa file</span></button>
+        <p class="nav-group">Học thuật toán</p>
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-rsa" type="button" role="tab"
+          data-accent="rsa"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="8" cy="15" r="4" />
+            <path d="M10.8 12.2 20 3" />
+            <path d="m16 7 3 3" />
+            <path d="m18.5 4.5 2 2" />
+          </svg><span>RSA từng bước</span></button>
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-aes" type="button" role="tab"
+          data-accent="aes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+          </svg><span>AES từng bước</span></button>
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-visual" type="button" role="tab"
+          data-accent="aes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg><span>Trực quan</span></button>
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-hybrid" type="button" role="tab"
+          data-accent="hybrid"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="m3 7 9 6 9-6" />
+          </svg><span>Mã hóa lai văn bản</span></button>
+        <p class="nav-group">Kiểm chứng</p>
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-tests" type="button" role="tab"
+          data-accent="tests"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 11l3 3 8-8" />
+            <path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9" />
+          </svg><span>Kiểm thử và hiệu năng</span></button>
+      </nav>
+      <div class="sidebar-note">
+        <p><b>Code tay</b> RSA, AES, SHA-256, HMAC, PBKDF2 trong <code>js/core/</code>.</p>
+        <p>Không dùng thư viện mật mã.</p>
+      </div>
+    </aside>
+
+    <main id="main" class="content tab-content">
+      <div class="command-bar" aria-hidden="true">
+        <span class="command-path"><b>~/crypto-lab</b><span>/</span><span data-current-view>file-encryption</span></span>
+        <span class="command-state"><i></i> SYSTEM READY</span>
+      </div>
+
+
+      <!-- ỨNG DỤNG -->
+      <section class="tab-pane fade show active theme-hybrid" id="tab-app" role="tabpanel">
+        <div class="page-head">
+          <h1>Mã hóa file</h1>
+          <p>Khóa file bằng mật khẩu để cất giữ, hoặc gửi file cho người khác bằng khóa công khai của họ.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="panel h-100 theme-aes">
+              <h2 class="panel-title">Mã hóa file bằng mật khẩu</h2>
+              <p class="lead-text">Cất giữ file riêng tư (ảnh, PDF, Word…). Mật khẩu qua PBKDF2 thành khóa AES; thẻ HMAC
+                phát hiện sai mật khẩu hoặc file bị sửa.</p>
+              <p class="form-label">File cần mã hóa, hoặc file .enc cần giải mã</p>
+              <label class="drop" for="ap-file">
+                <input type="file" id="ap-file" class="drop-input">
+                <svg class="drop-ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 16V4" />
+                  <path d="m7 9 5-5 5 5" />
+                  <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                </svg>
+                <span class="drop-main"><b>Chọn file</b> hoặc kéo thả vào đây</span>
+                <span class="drop-file" data-for="ap-file">Chưa chọn file. Tối đa 50 MB.</span>
+              </label>
+              <label class="form-label mt-3" for="ap-pass">Mật khẩu</label>
+              <div class="input-group">
+                <input type="password" id="ap-pass" class="form-control" autocomplete="new-password"
+                  placeholder="Ít nhất 8 ký tự">
+                <button class="btn btn-outline-accent" type="button" id="ap-show">Hiện</button>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-6"><label class="form-label" for="ap-size">Khóa AES</label>
+                  <select id="ap-size" class="form-select">
+                    <option value="32" selected>AES-256</option>
+                    <option value="24">AES-192</option>
+                    <option value="16">AES-128</option>
+                  </select>
+                </div>
+                <div class="col-6"><label class="form-label" for="ap-mode">Chế độ</label>
+                  <select id="ap-mode" class="form-select">
+                    <option value="CBC">CBC</option>
+                    <option value="CTR">CTR</option>
+                  </select>
+                </div>
+              </div>
+              <div class="d-flex flex-wrap gap-2 mt-3">
+                <button class="btn btn-accent" id="ap-enc">Mã hóa và tải file .enc</button>
+                <button class="btn btn-outline-accent" id="ap-dec">Giải mã file .enc</button>
+              </div>
+              <div class="progress mt-3 d-none" id="ap-prog" role="progressbar" aria-label="Tiến độ">
+                <div class="progress-bar"></div>
+              </div>
+              <div class="status mt-3" id="ap-status" role="status"></div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="panel h-100 theme-rsa">
+              <h2 class="panel-title">Gửi file cho người khác bằng khóa công khai</h2>
+              <p class="lead-text">Người nhận gửi bạn file khóa công khai. Bạn mã hóa file cho họ; chỉ khóa riêng của họ
+                mở được (RSA-OAEP bọc khóa, AES mã hóa nội dung).</p>
+              <p class="form-label mb-2">1. Khóa RSA</p>
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-accent" id="ak-gen">Sinh cặp khóa 2048 bit</button>
+                <label class="btn btn-outline-accent mb-0">Nạp file khóa<input type="file" id="ak-load"
+                    accept=".json,application/json" hidden></label>
+                <button class="btn btn-outline-accent" id="ak-pub" disabled>Tải khóa công khai</button>
+                <button class="btn btn-outline-accent" id="ak-priv" disabled>Tải khóa riêng</button>
+              </div>
+              <div class="status mt-3" id="ak-status" role="status"></div>
+              <p class="form-label mt-3 mb-2">2. File</p>
+              <label class="drop" for="ar-file">
+                <input type="file" id="ar-file" class="drop-input">
+                <svg class="drop-ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 16V4" />
+                  <path d="m7 9 5-5 5 5" />
+                  <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                </svg>
+                <span class="drop-main"><b>Chọn file</b> hoặc kéo thả vào đây</span>
+                <span class="drop-file" data-for="ar-file">Chưa chọn file. Tối đa 50 MB.</span>
+              </label>
+              <div class="d-flex flex-wrap gap-2 mt-3">
+                <button class="btn btn-accent" id="ar-enc" disabled>Mã hóa cho người nhận</button>
+                <button class="btn btn-outline-accent" id="ar-dec" disabled>Giải mã bằng khóa riêng</button>
+              </div>
+              <div class="progress mt-3 d-none" id="ar-prog" role="progressbar" aria-label="Tiến độ">
+                <div class="progress-bar"></div>
+              </div>
+              <div class="status mt-3" id="ar-status" role="status"></div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="panel">
+              <h2 class="panel-title">Bên trong file .enc</h2>
+              <div id="ap-detail" class="detail">
+                <p class="note">Mỗi file .enc gồm các phần dưới đây. Mã hóa hoặc giải mã một file để xem kích thước thật
+                  và từng bước thuật toán đã chạy.</p>
+                <div class="enc-map enc-sample mb-3">
+                  <span style="flex:.08;background:#15213a"
+                    title="Đầu file (10 byte): Nhận dạng N01ENC, phiên bản, chế độ, độ dài khóa">Đầu</span>
+                  <span style="flex:.15;background:#5b6779"
+                    title="Salt cho PBKDF2 (16 byte) hoặc Khóa phiên bọc RSA-OAEP (256 byte)">Salt / Khóa bọc</span>
+                  <span style="flex:.07;background:#4450b0" title="Vector khởi tạo IV: 16 byte ngẫu nhiên">IV</span>
+                  <span style="flex:.58;background:#0b7f7d"
+                    title="Bản mã AES: Chứa tên file gốc và toàn bộ nội dung">Bản mã AES (tên file + nội dung)</span>
+                  <span style="flex:.12;background:#b5452e"
+                    title="Thẻ HMAC-SHA256: 32 byte phát hiện sai mật khẩu hoặc file bị sửa">HMAC</span>
+                </div>
+                <dl class="legend-grid">
+                  <div>
+                    <dt><span class="dot" style="background:#15213a"></span>Đầu file</dt>
+                    <dd>Nhận dạng N01ENC, phiên bản, chế độ, độ dài khóa</dd>
+                  </div>
+                  <div>
+                    <dt><span class="dot" style="background:#5b6779"></span>Salt / Khóa bọc</dt>
+                    <dd>Salt cho PBKDF2, hoặc khóa phiên đã bọc bằng RSA-OAEP</dd>
+                  </div>
+                  <div>
+                    <dt><span class="dot" style="background:#4450b0"></span>IV</dt>
+                    <dd>16 byte ngẫu nhiên, mỗi lần mã hóa một khác</dd>
+                  </div>
+                  <div>
+                    <dt><span class="dot" style="background:#0b7f7d"></span>Bản mã</dt>
+                    <dd>AES-CBC hoặc CTR, giấu cả tên file</dd>
+                  </div>
+                  <div>
+                    <dt><span class="dot" style="background:#b5452e"></span>Thẻ HMAC</dt>
+                    <dd>Phát hiện sai mật khẩu hoặc file bị sửa</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RSA -->
+      <section class="tab-pane fade theme-rsa" id="tab-rsa" role="tabpanel">
+        <div class="page-head">
+          <h1>RSA từng bước</h1>
+          <p>Tạo khóa từ p, q, e và xem từng phép tính, hoặc sinh khóa 2048 bit để mã hóa văn bản.</p>
+        </div>
+        <div class="seg mb-3" role="tablist">
+          <button class="seg-btn active" data-bs-toggle="tab" data-bs-target="#rsa-small" type="button">Ví dụ số nhỏ,
+            từng bước</button>
+          <button class="seg-btn" data-bs-toggle="tab" data-bs-target="#rsa-real" type="button">Khóa thật, mã hóa văn
+            bản</button>
+        </div>
+        <div class="tab-content">
+          <!-- số nhỏ -->
+          <div class="tab-pane fade show active" id="rsa-small">
+            <div class="row g-4">
+              <div class="col-lg-5">
+                <div class="panel">
+                  <h2 class="panel-title">Tạo khóa từ p, q, e</h2>
+                  <div class="row g-2">
+                    <div class="col-4"><label class="form-label" for="rs-p">p</label><input id="rs-p"
+                        class="form-control mono" value="61"></div>
+                    <div class="col-4"><label class="form-label" for="rs-q">q</label><input id="rs-q"
+                        class="form-control mono" value="53"></div>
+                    <div class="col-4"><label class="form-label" for="rs-e">e</label><input id="rs-e"
+                        class="form-control mono" value="17"></div>
+                  </div>
+                  <div class="row g-2 mt-1 align-items-end">
+                    <div class="col-6"><label class="form-label" for="rs-m">Bản rõ m (số nguyên)</label><input id="rs-m"
+                        class="form-control mono" value="65"></div>
+                    <div class="col-6"><label class="form-label" for="rs-c">Bản mã c</label><input id="rs-c"
+                        class="form-control mono" value=""></div>
+                  </div>
+                  <div class="d-flex flex-wrap gap-2 mt-3">
+                    <button class="btn btn-accent" id="rs-encrypt">Mã hóa m</button>
+                    <button class="btn btn-outline-accent" id="rs-decrypt">Giải mã c</button>
+                    <button class="btn btn-link ms-auto" id="rs-reset">Nạp lại ví dụ 61, 53, 17</button>
+                  </div>
+                  <div class="status mt-3" id="rs-status" role="status"></div>
+                  <dl class="kv mt-3" id="rs-key"></dl>
+                </div>
+              </div>
+              <div class="col-lg-7">
+                <div class="panel">
+                  <h2 class="panel-title">Bên trong thuật toán</h2>
+                  <div id="rs-detail" class="detail"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- khóa thật -->
+          <div class="tab-pane fade" id="rsa-real">
+            <div class="row g-4">
+              <div class="col-lg-5">
+                <div class="panel">
+                  <h2 class="panel-title">1. Sinh cặp khóa</h2>
+                  <div class="d-flex flex-wrap gap-2 align-items-end">
+                    <div>
+                      <label class="form-label" for="rr-bits">Độ dài n</label>
+                      <select id="rr-bits" class="form-select">
+                        <option value="512">512 bit (chỉ xem tốc độ sinh khóa)</option>
+                        <option value="1024">1024 bit</option>
+                        <option value="2048" selected>2048 bit (khuyến nghị)</option>
+                      </select>
+                    </div>
+                    <button class="btn btn-accent" id="rr-gen">Sinh khóa</button>
+                  </div>
+                  <div class="status mt-3" id="rr-gen-status" role="status"></div>
+                  <dl class="kv mt-2" id="rr-key"></dl>
+                </div>
+                <div class="panel mt-4">
+                  <h2 class="panel-title">2. Mã hóa văn bản (RSA-OAEP, SHA-256)</h2>
+                  <label class="form-label" for="rr-plain">Bản rõ</label>
+                  <textarea id="rr-plain" class="form-control" rows="3">Xin chào thầy và các bạn!</textarea>
+                  <div class="d-flex flex-wrap gap-2 mt-3">
+                    <button class="btn btn-accent" id="rr-encrypt" disabled>Mã hóa bằng khóa công khai</button>
+                    <button class="btn btn-outline-accent" id="rr-decrypt" disabled>Giải mã bằng khóa riêng</button>
+                  </div>
+                  <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="rr-crt" checked>
+                    <label class="form-check-label" for="rr-crt">Giải mã nhanh bằng định lý số dư Trung Hoa
+                      (CRT)</label>
+                  </div>
+                  <label class="form-label mt-3" for="rr-cipher">Bản mã (Base64)</label>
+                  <textarea id="rr-cipher" class="form-control mono small-mono" rows="4"></textarea>
+                  <div class="status mt-3" id="rr-status" role="status"></div>
+                </div>
+              </div>
+              <div class="col-lg-7">
+                <div class="panel">
+                  <h2 class="panel-title">Bên trong thuật toán</h2>
+                  <div id="rr-detail" class="detail">
+                    <div id="rr-gen-log">
+                      <p class="empty">Chọn độ dài khóa rồi bấm <b>Sinh khóa</b>. Quá trình tìm số nguyên tố bằng
+                        Miller–Rabin sẽ hiện ở đây.</p>
+                    </div>
+                    <div id="rr-oaep" class="mt-3"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AES -->
+      <section class="tab-pane fade theme-aes" id="tab-aes" role="tabpanel">
+        <div class="page-head">
+          <h1>AES từng bước</h1>
+          <p>Mã hóa văn bản hoặc một khối 16 byte, rồi xem ma trận State thay đổi qua từng phép biến đổi.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="panel">
+              <h2 class="panel-title">Mã hóa và giải mã</h2>
+              <div class="row g-2">
+                <div class="col-6">
+                  <label class="form-label" for="ae-size">Độ dài khóa</label>
+                  <select id="ae-size" class="form-select">
+                    <option value="16">AES-128</option>
+                    <option value="24">AES-192</option>
+                    <option value="32">AES-256</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <label class="form-label" for="ae-mode">Chế độ</label>
+                  <select id="ae-mode" class="form-select">
+                    <option value="CBC">CBC (khuyên dùng)</option>
+                    <option value="CTR">CTR</option>
+                    <option value="ECB">ECB (chỉ để minh họa)</option>
+                    <option value="BLOCK">Một khối (hex)</option>
+                  </select>
+                </div>
+              </div>
+              <label class="form-label mt-3" for="ae-key">Khóa (hex)</label>
+              <div class="input-group">
+                <input id="ae-key" class="form-control mono" spellcheck="false">
+                <button class="btn btn-outline-accent" id="ae-randkey" type="button">Khóa ngẫu nhiên</button>
+              </div>
+              <div class="form-text" id="ae-key-help"></div>
+              <label class="form-label mt-3" for="ae-plain" id="ae-plain-label">Bản rõ</label>
+              <textarea id="ae-plain" class="form-control" rows="3">Xin chào thầy và các bạn!</textarea>
+              <div class="d-flex flex-wrap gap-2 mt-3">
+                <button class="btn btn-accent" id="ae-encrypt">Mã hóa</button>
+                <button class="btn btn-outline-accent" id="ae-decrypt">Giải mã</button>
+                <button class="btn btn-link ms-auto" id="ae-nist">Nạp ví dụ FIPS 197</button>
+              </div>
+              <label class="form-label mt-3" for="ae-cipher" id="ae-cipher-label">Bản mã (Base64 của IV ‖ bản
+                mã)</label>
+              <textarea id="ae-cipher" class="form-control mono small-mono" rows="3" spellcheck="false"></textarea>
+              <div class="status mt-3" id="ae-status" role="status"></div>
+              <div class="compare mt-2" id="ae-compare"></div>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="panel">
+              <h2 class="panel-title">Bên trong khối đầu tiên</h2>
+              <div id="ae-detail" class="detail">
+                <p class="empty">Bấm <b>Mã hóa</b> để xem State 4×4 thay đổi qua từng phép biến đổi của từng vòng.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRỰC QUAN -->
+      <section class="tab-pane fade theme-aes" id="tab-visual" role="tabpanel">
+        <div class="page-head">
+          <h1>Trực quan</h1>
+          <p>Hai thí nghiệm cho thấy vì sao AES khuếch tán tốt và vì sao không được dùng chế độ ECB.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="panel h-100">
+              <h2 class="panel-title">Hiệu ứng lan truyền (avalanche)</h2>
+              <p class="lead-text">Đổi đúng 1 bit rồi đếm xem bao nhiêu bit của State khác đi sau mỗi vòng. Mức lý tưởng
+                là một nửa, tức 64 trên 128 bit.</p>
+              <div class="row g-2 align-items-end">
+                <div class="col-sm-4"><label class="form-label" for="av-size">Khóa</label>
+                  <select id="av-size" class="form-select">
+                    <option value="16">AES-128</option>
+                    <option value="24">AES-192</option>
+                    <option value="32">AES-256</option>
+                  </select>
+                </div>
+                <div class="col-sm-4"><label class="form-label" for="av-what">Đổi 1 bit của</label>
+                  <select id="av-what" class="form-select">
+                    <option value="plain">bản rõ</option>
+                    <option value="key">khóa</option>
+                  </select>
+                </div>
+                <div class="col-sm-4"><label class="form-label" for="av-n">Số lần thử</label>
+                  <select id="av-n" class="form-select">
+                    <option>100</option>
+                    <option selected>500</option>
+                    <option>1000</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-accent mt-3" id="av-run">Chạy thí nghiệm</button>
+              <div id="av-chart" class="chart mt-3"></div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="panel h-100">
+              <h2 class="panel-title">Vì sao không dùng ECB</h2>
+              <p class="lead-text">Mã hóa từng điểm ảnh bằng AES-128. Với ECB, các khối giống nhau cho bản mã giống nhau
+                nên hình vẫn lộ ra. CBC thì không.</p>
+              <div class="d-flex flex-wrap gap-2 align-items-center">
+                <button class="btn btn-accent" id="img-run">Mã hóa ảnh</button>
+                <label class="btn btn-outline-accent mb-0">Chọn ảnh khác<input type="file" id="img-file"
+                    accept="image/*" hidden></label>
+              </div>
+              <div class="img-row mt-3">
+                <figure><canvas id="img-src" width="200" height="200"></canvas>
+                  <figcaption>Ảnh gốc</figcaption>
+                </figure>
+                <figure><canvas id="img-ecb" width="200" height="200"></canvas>
+                  <figcaption>AES-ECB</figcaption>
+                </figure>
+                <figure><canvas id="img-cbc" width="200" height="200"></canvas>
+                  <figcaption>AES-CBC</figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MÃ HÓA LAI -->
+      <section class="tab-pane fade theme-hybrid" id="tab-hybrid" role="tabpanel">
+        <div class="page-head">
+          <h1>Mã hóa lai văn bản</h1>
+          <p>Gửi một tin nhắn bằng RSA và AES cùng lúc, xem từng bước tạo và mở gói tin.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="panel">
+              <h2 class="panel-title">Gửi thông điệp bằng mã hóa lai</h2>
+              <p class="lead-text">AES-256 mã hóa nội dung bằng một khóa phiên ngẫu nhiên. RSA-OAEP bọc khóa phiên bằng
+                khóa công khai của người nhận.</p>
+              <div class="status" id="hy-key-status"></div>
+              <button class="btn btn-outline-accent mt-2" id="hy-gen">Sinh khóa RSA 2048 bit cho người nhận</button>
+              <label class="form-label mt-3" for="hy-plain">Nội dung</label>
+              <textarea id="hy-plain" class="form-control"
+                rows="4">Thầy ơi, đây là báo cáo của Nhóm 01. Nội dung dài bao nhiêu cũng được vì phần dữ liệu do AES đảm nhận.</textarea>
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-accent" id="hy-encrypt" disabled>Mã hóa và đóng gói</button>
+                <button class="btn btn-outline-accent" id="hy-decrypt" disabled>Mở gói</button>
+              </div>
+              <label class="form-label mt-3" for="hy-packet">Gói tin (JSON)</label>
+              <textarea id="hy-packet" class="form-control mono small-mono" rows="7" spellcheck="false"></textarea>
+              <div class="status mt-3" id="hy-status" role="status"></div>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="panel">
+              <h2 class="panel-title">Các bước</h2>
+              <ol class="flow" id="hy-flow">
+                <li><b>Sinh khóa phiên K</b> 32 byte ngẫu nhiên.<span class="flow-val" data-k="k"></span></li>
+                <li><b>AES-256-CBC</b> mã hóa nội dung bằng K với IV ngẫu nhiên.<span class="flow-val"
+                    data-k="data"></span></li>
+                <li><b>RSA-OAEP</b> mã hóa K bằng khóa công khai (n, e) của người nhận.<span class="flow-val"
+                    data-k="wrap"></span></li>
+                <li><b>Gửi gói tin</b> gồm khóa đã bọc, IV và bản mã.</li>
+                <li><b>Người nhận</b> dùng khóa riêng mở K, rồi giải mã nội dung bằng AES.<span class="flow-val"
+                    data-k="open"></span></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KIỂM THỬ -->
+      <section class="tab-pane fade theme-tests" id="tab-tests" role="tabpanel">
+        <div class="page-head">
+          <h1>Kiểm thử và hiệu năng</h1>
+          <p>Đối chiếu code tay với dữ liệu chuẩn NIST, RFC và với thư viện Web Crypto của trình duyệt.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="panel">
+              <h2 class="panel-title">So tốc độ: code tay và Web Crypto</h2>
+              <p class="lead-text">Web Crypto là thư viện mật mã có sẵn của trình duyệt, viết bằng mã máy đã tối ưu. Kết
+                quả phụ thuộc máy đang chạy.</p>
+              <button class="btn btn-accent" id="bm-run">Đo tốc độ</button>
+              <div class="status mt-3" id="bm-status" role="status"></div>
+              <div id="bm-chart" class="chart mt-3"></div>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="panel">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <h2 class="panel-title mb-0 me-auto">Kiểm thử với dữ liệu chuẩn NIST</h2>
+                <a class="btn btn-outline-accent btn-sm" href="tests/test.html" target="_blank" rel="noopener">Mở trong
+                  tab mới</a>
+                <button class="btn btn-accent btn-sm" id="qt-run">Chạy kiểm thử</button>
+              </div>
+              <p class="lead-text">29 nhóm kiểm thử: FIPS 197, SP 800-38A (ECB, CBC, CTR với 3 độ dài khóa), SHA-256,
+                HMAC, PBKDF2, RSA, OAEP, file .enc và giải mã chéo với Web Crypto.</p>
+              <iframe id="qt-frame" title="Kết quả QUnit" class="qunit-frame"></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-ambient" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="footer-shell">
+      <section class="footer-hero" aria-labelledby="footer-title">
+        <div class="footer-hero-copy">
+          <div class="footer-brand-lockup">
+            <span class="footer-logo-wrap"><img src="assets/logo_iuh.png" alt="Trường Đại học Công nghiệp TP.HCM"
+                class="footer-logo"></span>
+            <span><b>IUH CRYPTO LAB</b><small>NHÓM 01 / DHHTTT20B_TCTA</small></span>
+          </div>
+          <p class="footer-eyebrow">INTRODUCTION TO INFORMATION SECURITY</p>
+          <h2 id="footer-title">Hiểu mật mã bằng cách<br><span>nhìn thấy nó vận hành.</span></h2>
+          <p class="footer-summary">Một phòng thí nghiệm chạy hoàn toàn trên trình duyệt để mã hóa file, khám phá từng
+            vòng AES và theo dõi toàn bộ hành trình tạo khóa RSA.</p>
+          <div class="footer-trust">
+            <span><i></i>Xử lý cục bộ</span><span><i></i>Không gửi dữ liệu</span><span><i></i>Không dùng thư viện mật mã</span>
+          </div>
+        </div>
+        <div class="footer-specs" aria-label="Thông số kỹ thuật">
+          <article><span class="spec-index">01</span><strong>AES</strong><b>128 / 192 / 256</b><small>CBC · CTR · ECB</small></article>
+          <article><span class="spec-index">02</span><strong>RSA</strong><b>2048 BIT</b><small>OAEP · CRT · Miller–Rabin</small></article>
+          <article><span class="spec-index">03</span><strong>HASH</strong><b>SHA-256</b><small>HMAC · PBKDF2</small></article>
+          <article><span class="spec-index">04</span><strong>FILE</strong><b>.ENC</b><small>Authenticated container</small></article>
+        </div>
+      </section>
+
+      <div class="footer-data-stream" aria-hidden="true">
+        <span>4E 30 31 45 4E 43</span><i></i><span>AES-256-CBC</span><i></i><span>RSA-OAEP-SHA256</span><i></i><span>HMAC VERIFIED</span>
+      </div>
+
+      <div class="footer-grid">
+        <section class="footer-column footer-about">
+          <p class="footer-column-index">01 / PROJECT</p>
+          <h3>Về phòng lab</h3>
+          <p>Bài tập lớn môn Nhập môn An toàn thông tin tại Trường Đại học Công nghiệp TP. Hồ Chí Minh.</p>
+          <div class="footer-course"><span>COURSE</span><b>Nhập môn ATTT</b></div>
+        </section>
+        <section class="footer-column">
+          <p class="footer-column-index">02 / IMPLEMENTATION</p>
+          <h3>Thuật toán tự cài đặt</h3>
+          <ul class="footer-feature-list">
+            <li><span>RSA</span>Sinh khóa, Miller–Rabin, CRT, OAEP</li>
+            <li><span>AES</span>Key schedule, block cipher, CBC/CTR</li>
+            <li><span>AUTH</span>SHA-256, HMAC và PBKDF2</li>
+            <li><span>FILE</span>Container .enc có xác thực</li>
+          </ul>
+        </section>
+        <section class="footer-column">
+          <p class="footer-column-index">03 / STANDARDS</p>
+          <h3>Tài liệu chuẩn</h3>
+          <ul class="footer-link-list">
+            <li><a href="https://doi.org/10.6028/NIST.FIPS.197-upd1" target="_blank" rel="noopener"><span>NIST FIPS 197</span><small>AES STANDARD</small></a></li>
+            <li><a href="https://csrc.nist.gov/pubs/sp/800/38/a/final" target="_blank" rel="noopener"><span>NIST SP 800-38A</span><small>BLOCK MODES</small></a></li>
+            <li><a href="https://www.rfc-editor.org/rfc/rfc8017" target="_blank" rel="noopener"><span>RFC 8017</span><small>RSA / OAEP</small></a></li>
+            <li><a href="https://www.rfc-editor.org/rfc/rfc8018" target="_blank" rel="noopener"><span>RFC 8018</span><small>PBKDF2</small></a></li>
+          </ul>
+        </section>
+        <section class="footer-column">
+          <p class="footer-column-index">04 / TEAM</p>
+          <h3>Nhóm thực hiện</h3>
+          <ul class="footer-team-list">
+            <li><span>VL</span><b>Vũ Lộc</b></li>
+            <li><span>DM</span><b>Trần Bùi Đức Minh</b></li>
+            <li><span>TH</span><b>Nguyễn Thanh Huy</b></li>
+            <li><span>NM</span><b>Nguyễn Đức Mạnh</b></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <span class="footer-copyright">© 2026 <b>NHÓM 01</b> · DHHTTT20B_TCTA</span>
+      <span class="footer-runtime"><i></i> LOCAL RUNTIME · SYSTEM SECURE</span>
+      <a class="footer-top" href="#main">Về đầu trang <span aria-hidden="true">↑</span></a>
+    </div>
+  </footer>
+
+  <div class="modal fade" id="guide" tabindex="-1" aria-labelledby="guide-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="guide-title">Dùng ứng dụng trong 3 bước</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <ol class="guide-steps">
+            <li><b>Mã hóa file bằng mật khẩu.</b> Chọn file, nhập mật khẩu từ 8 ký tự, bấm <i>Mã hóa và tải file
+                .enc</i>. Muốn mở lại, chọn file .enc, nhập đúng mật khẩu và bấm <i>Giải mã file .enc</i>.</li>
+            <li><b>Gửi file cho người khác.</b> Người nhận bấm <i>Sinh cặp khóa</i>, gửi bạn file khóa công khai. Bạn
+              nạp file đó, chọn file cần gửi và bấm <i>Mã hóa cho người nhận</i>. Chỉ khóa riêng của họ mở được.</li>
+            <li><b>Xem bên trong thuật toán.</b> Các trang RSA từng bước và AES từng bước hiện từng phép tính; trang
+              Kiểm thử đối chiếu với dữ liệu chuẩn NIST.</li>
+          </ol>
+          <p class="note mb-0">Khóa riêng và mật khẩu chỉ nằm trong bộ nhớ của trang này. Tải lại trang là chúng biến
+            mất.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="vendor/jquery-3.7.1.min.js"></script>
+  <script src="vendor/bootstrap.bundle.min.js"></script>
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/sha256.js"></script>
+  <script src="js/core/aes.js"></script>
+  <script src="js/core/modes.js"></script>
+  <script src="js/core/rsa.js"></script>
+  <script src="js/core/oaep.js"></script>
+  <script src="js/core/hybrid.js"></script>
+  <script src="js/core/kdf.js"></script>
+  <script src="js/core/filecrypt.js"></script>
+  <script src="js/lib/webcrypto.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ui-aes.js"></script>
+  <script src="js/ui-visual.js"></script>
+  <script src="js/ui-more.js"></script>
+  <script src="js/ui-app.js"></script>
+  <script src="js/ui-shell.js"></script>
+  <script src="js/ui-effects.js"></script>
+</body>
+
+</html>

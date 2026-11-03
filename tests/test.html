@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kiểm thử RSA &amp; AES (QUnit)</title>
+  <link rel="stylesheet" href="../vendor/qunit-2.21.0.css">
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="test-theme.css">
+</head>
+<body class="test-lab">
+  <div class="test-fx" aria-hidden="true"><span></span><span></span><span></span></div>
+  <header class="test-hero">
+    <div class="test-brand">
+      <span class="test-logo"><img src="../assets/logo_iuh.png" alt="Trường Đại học Công nghiệp TP.HCM"></span>
+      <span><small>AUTOMATED VALIDATION SUITE</small><b>RSA &amp; AES TEST LAB</b><em>QUNIT 2.21.0 / LOCAL RUNTIME</em></span>
+    </div>
+    <div class="test-metrics" aria-label="Tổng quan kiểm thử">
+      <article><span>TESTS</span><strong id="metric-tests">--</strong><small>test cases</small></article>
+      <article><span>ASSERTIONS</span><strong id="metric-assertions">--</strong><small>validated</small></article>
+      <article><span>FAILED</span><strong id="metric-failed">--</strong><small>exceptions</small></article>
+      <article><span>RUNTIME</span><strong id="metric-runtime">--</strong><small>milliseconds</small></article>
+    </div>
+    <div class="test-run-state" role="status" aria-live="polite">
+      <i></i><span><b id="run-state-title">ĐANG KHỞI TẠO</b><small id="run-state-copy">Đang nạp bộ kiểm thử...</small></span>
+    </div>
+  </header>
+  <main class="test-content">
+    <div class="test-section-head" aria-hidden="true"><span>VALIDATION LOG</span><i></i><small>FIPS / NIST / RFC VECTORS</small></div>
+    <div id="qunit"></div>
+  </main>
+  <div id="qunit-fixture"></div>
+  <script src="../vendor/qunit-2.21.0.js"></script>
+  <script>QUnit.config.reorder = false;</script>
+  <script src="test-ui.js"></script>
+  <script src="../js/core/utils.js"></script>
+  <script src="../js/core/sha256.js"></script>
+  <script src="../js/core/aes.js"></script>
+  <script src="../js/core/modes.js"></script>
+  <script src="../js/core/rsa.js"></script>
+  <script src="../js/core/oaep.js"></script>
+  <script src="../js/core/hybrid.js"></script>
+  <script src="../js/core/kdf.js"></script>
+  <script src="../js/core/filecrypt.js"></script>
+  <script src="../js/lib/webcrypto.js"></script>
+  <script src="tests.js"></script>
+</body>
+</html>
